@@ -8,7 +8,7 @@ module Pikelet
 
     def record(type_signature, base_definition: nil, &block)
       base_definition ||= base_record_definition
-      record_definitions[type_signature] = RecordDefinition.new(self, base_definition, &block)
+      record_definitions[type_signature] = RecordDefinition.new(self, base_definition: base_definition, &block)
     end
 
     def record_definitions
