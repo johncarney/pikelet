@@ -1,5 +1,9 @@
 # Pikelet
 
+[![Gem Version][gem-badge]][gem]
+[![Build status][build-badge]][build]
+[![Coverage Status][coverage-badge]][coverage]
+
 A pikelet is a type of small pancake popular in Australia and New Zealand.
 Also, a simple flat-file database parser capable of dealing with
 files containing heterogeneous records.
@@ -162,3 +166,10 @@ Or install it yourself as:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+[gem-badge]:      https://badge.fury.io/rb/pikelet.svg
+[gem]:            http://badge.fury.io/rb/pikelet
+[build-badge]:    https://travis-ci.org/johncarney/pikelet.svg?branch=master
+[build]:          https://travis-ci.org/johncarney/pikelet
+[coverage-badge]: https://img.shields.io/coveralls/johncarney/pikelet.svg
+[coverage]:       https://coveralls.io/r/johncarney/pikelet?branch=master
