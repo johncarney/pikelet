@@ -27,4 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rspec-its"
   spec.add_development_dependency "rspec-collection_matchers"
+  spec.add_development_dependency "coveralls"
 end
