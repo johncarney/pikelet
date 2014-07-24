@@ -1,8 +1,10 @@
+require "overpunch"
+
 module Pikelet
   class FieldDefinition
     attr_reader :indices, :type
 
-    def initialize(indices, type)
+    def initialize(indices, type: nil)
       @indices = indices
       @type = type
     end
