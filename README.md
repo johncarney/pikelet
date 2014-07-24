@@ -70,7 +70,7 @@ or this:
       definition.parse(f)
     end
 
-The parse returns an enumerator, which you can either iterate over, or convert
+`parse` returns an enumerator, which you can either iterate over, or convert
 to an array, or whatever else you people do with enumerators. In any case,
 what you'll end up with is a series of `Structs` like this:
 
@@ -88,7 +88,7 @@ addresses:
 
 We can describe it as follows:
 
-    definition = Pikelet.define do
+    Pikelet.define do
       type_signature 0...4
 
       record "NAME" do
@@ -107,8 +107,8 @@ We can describe it as follows:
 Note that the type signature is described as a field like any other, but it
 must have the name `type_signature`.
 
-Each record type is described in `record` statements which take the record's
-type signature as a parameter and a block describing its fields.
+Each record type is described using `record` statements, which take the
+record's type signature as a parameter and a block describing its fields.
 
 When we parse the data, we end up with this:
 
@@ -133,7 +133,7 @@ What happens if we were given the data in the previous example in CSV form?
 In this case instead of describing fields with a boundary range, we just
 give it a simple (zero-based) index, like so:
 
-    definition = Pikelet.define do
+    Pikelet.define do
       type_signature 0
 
       record "NAME" do
@@ -150,14 +150,15 @@ give it a simple (zero-based) index, like so:
       end
     end
 
-This yields the same results as above. Note that this ability to handle CSV
-was not planned - it just sprang fully-formed from the implementation. One of
-those pleasant little surprises that happens sometimes. If only I had a use
-for it.
+This yields the same results as above.
+
+Note that this ability to handle CSV was not planned - it just sprang
+fully-formed from the implementation. One of those pleasant little surprises
+that happens sometimes. If only I had a use for it.
 
 ### Inheritance
 
-Now we go back to our original example starting with a simple list of names,
+Now we go back to our original example, starting with a simple list of names,
 but this time some of the records include a nickname:
 
     PLAINNicolaus  Copernicus
@@ -167,7 +168,7 @@ The first and last name fields have the same boundaries in each case, but the
 "FANCY" records have an additional field. We can describe this by nesting the
 definition for FANCY records inside the definition for the PLAIN records:
 
-    definition = Pikelet.define do
+    Pikelet.define do
       type_signature 0...5
 
       record "PLAIN" do
@@ -267,8 +268,8 @@ of it and many, many more record types.
 
 * With a very small amount of work, Pikelet could produce flat file records
   as easily as it consumes them.
-* The way integer fields are described is very primitive and I'd like to
-  add the ability to accept 'pluggable' field parsers.
+* The way integer fields are described is pretty ugle and I'd like to add the
+  ability to accept 'pluggable' field parsers.
 * I'd also like to ditch the signed overpunch, but it's the easiest way to
   deal with a particular itch I need scratched right now.
 * I had a crack at supporting lazy enumeration, and it kinda works. Sometimes.
