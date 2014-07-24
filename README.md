@@ -128,7 +128,7 @@ When we parse the data, we end up with this:
 What happens if we were given the data in the previous example in CSV form?
 
     NAME,Nicolaus,Copernicus
-    ADDR,123 South Street,Nowhereville,45678Y,Someplace,Someland
+    ADDR,123 South Street,Nowhereville,45678Y,Someplace
 
 In this case instead of describing fields with a boundary range, we just
 give it a simple (zero-based) index, like so:
@@ -146,7 +146,6 @@ give it a simple (zero-based) index, like so:
         city           2
         postal_code    3
         state          4
-        country        5
       end
     end
 
