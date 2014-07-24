@@ -149,4 +149,32 @@ describe Pikelet do
 
     its(:value) { is_expected.to eq -5631 }
   end
+
+  describe "given a block when parsing" do
+    let(:collected_records) { [] }
+
+    let(:definition) do
+      Pikelet.define do
+        name   0... 4
+        number 4...13
+      end
+    end
+
+    let(:data) do
+      <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        John012345678
+        Sue 087654321
+      FILE
+    end
+
+    before do
+      definition.parse(data) do |record|
+        collected_records << record.to_h
+      end
+    end
+
+    it 'yields each record to the block' do
+      expect(collected_records).to contain_exactly(*records.map(&:to_h))
+    end
+  end
 end
