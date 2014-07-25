@@ -41,8 +41,10 @@ Or install it yourself as:
 Let's say our file is a simple list of first and last names with each field
 being 10 characters in width, padded with spaces.
 
-    Nicolaus  Copernicus
-    Tycho     Brahe
+| 0...10       | 10...20      |
+|:------------ |:------------ |
+| `Nicolaus  ` | `Copernicus` |
+| `Tycho     ` | `Brahe     ` |
 
 We can describe this format using Pikelet as follows:
 
@@ -83,8 +85,13 @@ Now let's say we're given a file consisting of names and addresses, each
 record contains a 4-character type signature - 'NAME' for names, 'ADDR' for
 addresses:
 
-    NAMENicolaus  Copernicus
-    ADDR123 South Street    Nowhereville        45678Y    Someplace
+| 0...4  | 4...14       | 14...24      |
+|:------:|:------------ |:------------ |
+| `NAME` | `Nicolaus  ` | `Copernicus` |
+
+| 0...4  | 4...24                 | 24...44                | 44...54      | 54...74                |
+|:------:|:---------------------- |:---------------------- |:------------ |:---------------------- |
+| `ADDR` | `123 South Street    ` | `Nowhereville        ` | `45678Y    ` | `Someplace           ` |
 
 We can describe it as follows:
 
@@ -160,8 +167,13 @@ that happens sometimes. If only I had a use for it.
 Now we go back to our original example, starting with a simple list of names,
 but this time some of the records include a nickname:
 
-    PLAINNicolaus  Copernicus
-    FANCYTycho     Brahe     Tykester
+| 0...5   | 5...15       | 15...25      |
+|:-------:|:------------ |:------------ |
+| `PLAIN` | `Nicolaus  ` | `Copernicus` |
+
+| 0...5   | 5...15       | 15...25      | 25...45      |
+|:-------:|:------------ |:------------ |:------------ |
+| `FANCY` | `Tycho     ` | `Brahe     ` | `Tykester  ` |
 
 The first and last name fields have the same boundaries in each case, but the
 "FANCY" records have an additional field. We can describe this by nesting the
@@ -222,10 +234,12 @@ Currently only integers and signed overpunch numbers are supported.
 The `field` statement will actually accepts multiple ranges/indices and will
 simply glue the sections described together. Consider the following data:
 
-    BFH0000000101LONZZZ  203TEST1101022359GB000001
-    BCH00000002020111101007F110107
-    BOH000000030391200001101031                       GBP2
-    BKT0000000406      000001                    011X ZZZ
+| 0...3 | 3...11     | 11...13 | 13..-1                                      |
+|:-----:|:----------:|:-------:|:------------------------------------------- |
+| `BFH` | `00000001` | `01`    | `LONZZZ  203TEST1101022359GB000001        ` |
+| `BCH` | `00000002` | `02`    | `0111101007F110107                        ` |
+| `BOH` | `00000003` | `03`    | `91200001101031                       GBP2` |
+| `BKT` | `00000004` | `06`    | `      000001                    011X ZZZ ` |
 
 In this format the first three characters are a 'message identifier', the next
 8 characters are a sequence number and the next 2 are a 'numeric qualifier'.
