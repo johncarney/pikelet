@@ -114,10 +114,10 @@ describe Pikelet do
     its(:last)  { is_expected.to match_hash(name: "Sue",  number: "087654321", type_signature: "FANCY") }
   end
 
-  describe "given integer fields" do
+  describe "given a block for field parsing" do
     let(:definition) do
       Pikelet.define do
-        value 0...4, &:to_i
+        value(0...4) { |value| value.to_i }
       end
     end
 
@@ -130,24 +130,6 @@ describe Pikelet do
     subject { records.first }
 
     its(:value) { is_expected.to eq 5637 }
-  end
-
-  describe "given overpunch fields" do
-    let(:definition) do
-      Pikelet.define do
-        value(0...4) { |value| Overpunch.parse(value) }
-      end
-    end
-
-    let(:data) do
-      <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
-        563J
-      FILE
-    end
-
-    subject { records.first }
-
-    its(:value) { is_expected.to eq -5631 }
   end
 
   describe "given a block when parsing" do

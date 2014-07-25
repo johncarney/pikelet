@@ -10,9 +10,9 @@ module Pikelet
       end
     end
 
-    def field(name, *indices, type: nil, &block)
+    def field(name, *indices, &block)
       @record_class = nil
-      field_definitions[name] = Pikelet::FieldDefinition.new(indices, type: type, &block)
+      field_definitions[name] = Pikelet::FieldDefinition.new(indices, &block)
     end
 
     def record(type_signature, &block)
@@ -23,8 +23,8 @@ module Pikelet
       record_class.new(*field_definitions.values.map { |field| field.parse(data) })
     end
 
-    def method_missing(method, *args, **options, &block)
-      field(method, *args, **options, &block)
+    def method_missing(method, *args, &block)
+      field(method, *args, &block)
     end
 
     def record_class

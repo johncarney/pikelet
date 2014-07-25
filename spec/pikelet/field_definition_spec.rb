@@ -4,8 +4,7 @@ require "csv"
 
 describe Pikelet::FieldDefinition do
   let(:data)        { "The quick brown fox" }
-  let(:type)        { nil }
-  let(:definition)  { Pikelet::FieldDefinition.new(indices, type: type) }
+  let(:definition)  { Pikelet::FieldDefinition.new(indices) }
 
   subject(:value) { definition.parse(data) }
 
@@ -39,26 +38,6 @@ describe Pikelet::FieldDefinition do
 
     it "extracts the field" do
       expect(value).to eq "brown"
-    end
-  end
-
-  describe "for integer fields" do
-    let(:data)    { "xx326xx" }
-    let(:indices) { [ 2...5] }
-    let(:type)    { :integer }
-
-    it "converts the value to an integer" do
-      expect(value).to eq 326
-    end
-  end
-
-  describe "for overpunch fields" do
-    let(:data)    { "xx67Kxx" }
-    let(:indices) { [ 2...5] }
-    let(:type)    { :overpunch }
-
-    it "converts the value to an integer" do
-      expect(value).to eq -672
     end
   end
 
