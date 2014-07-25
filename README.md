@@ -267,7 +267,7 @@ of it and many, many more record types.
 
 * With a very small amount of work, Pikelet could produce flat file records
   as easily as it consumes them.
-* The way integer fields are described is pretty ugle and I'd like to add the
+* The way integer fields are described is pretty ugly and I'd like to add the
   ability to accept 'pluggable' field parsers.
 * I'd also like to ditch the signed overpunch, but it's the easiest way to
   deal with a particular itch I need scratched right now.
