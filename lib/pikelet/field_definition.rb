@@ -1,14 +1,14 @@
 module Pikelet
   class FieldDefinition
-    attr_reader :indices, :parser
+    attr_reader :index, :parser
 
-    def initialize(indices, &parser)
-      @indices = indices
+    def initialize(index, &parser)
+      @index = index
       @parser = parser || :strip.to_proc
     end
 
     def parse(text)
-      @parser.call(indices.map { |index| text[index] }.join)
+      parser.call(text[index])
     end
   end
 end

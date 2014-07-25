@@ -10,9 +10,9 @@ module Pikelet
       end
     end
 
-    def field(name, *indices, &block)
+    def field(name, index, &block)
       @record_class = nil
-      field_definitions[name] = Pikelet::FieldDefinition.new(indices, &block)
+      field_definitions[name] = Pikelet::FieldDefinition.new(index, &block)
     end
 
     def record(type_signature, &block)

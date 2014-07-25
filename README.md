@@ -211,52 +211,6 @@ You can also use shorthand syntax:
       a_number 0...4, &:to_i
     end
 
-### A stupid trick
-
-The `field` statement will actually accepts multiple ranges/indices and will
-simply glue the sections described together. Consider the following data:
-
-    |BFH|00000001|01|LONZZZ  203TEST1101022359GB000001        |
-    |BCH|00000002|02|0111101007F110107                        |
-    |BOH|00000003|03|91200001101031                       GBP2|
-    |BKT|00000004|06|      000001                    011X ZZZ |
-
-In this format the first three characters are a 'message identifier', the next
-8 characters are a sequence number and the next 2 are a 'numeric qualifier'.
-The message identifier and numeric qualifier together form the type signature.
-
-We can describe this as follows (let's not bother describing all the
-different record types):
-
-    Pikelet.define do
-      type_signature  0... 3, 11...13
-      sequence        3...11, &:to_i
-      payload        13.. -1
-    end
-
-Which will yield:
-
-    #<struct
-      type_signature="BFH01",
-      sequence=1,
-      payload="LONZZZ  203TEST1101022359GB000001">,
-    #<struct
-      type_signature="BCH02",
-      sequence=2,
-      payload="0111101007F110107">,
-    #<struct
-      type_signature="BOH03",
-      sequence=3,
-      payload="91200001101031                       GBP2">,
-    #<struct
-      type_signature="BKT06",
-      sequence=4,
-      payload="000001                    011X ZZZ">
-
-In case you were wondering, no I didn't make that format up. That is what a
-[BSP HOT file][dish] actually looks like, except there's a hell of a lot more
-of it and many, many more record types.
-
 ## Thoughts/plans
 
 * With some work, Pikelet could produce flat file records as easily as it
