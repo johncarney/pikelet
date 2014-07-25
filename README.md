@@ -237,7 +237,7 @@ different record types):
     Pikelet.define do
       type_signature  0... 3, 11...13
       sequence        3...11, type: :integer
-      payload        11.. -1
+      payload        13.. -1
     end
 
 Which will yield:
