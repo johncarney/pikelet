@@ -13,7 +13,7 @@ describe Pikelet do
 
   subject { records }
 
-  describe "a simple flat file" do
+  describe "for a simple flat file" do
     let(:definition) do
       Pikelet.define do
         name   0... 4
@@ -34,7 +34,7 @@ describe Pikelet do
     its(:last)  { is_expected.to match_hash(name: "Sue",  number: "087654321") }
   end
 
-  describe "a file with heterogeneous records" do
+  describe "for a file with heterogeneous records" do
     let(:definition) do
       Pikelet.define do
         type_signature 0...1
@@ -65,7 +65,7 @@ describe Pikelet do
     its(:last)  { is_expected.to match_hash(name: "Sue",  number: "087654321", type_signature: "B") }
   end
 
-  describe "a CSV file" do
+  describe "for a CSV file" do
     let(:definition) do
       Pikelet.define do
         name   0
@@ -114,10 +114,10 @@ describe Pikelet do
     its(:last)  { is_expected.to match_hash(name: "Sue",  number: "087654321", type_signature: "FANCY") }
   end
 
-  describe "integer fields" do
+  describe "given integer fields" do
     let(:definition) do
       Pikelet.define do
-        value 0...4, type: :integer
+        value 0...4, &:to_i
       end
     end
 
@@ -132,10 +132,10 @@ describe Pikelet do
     its(:value) { is_expected.to eq 5637 }
   end
 
-  describe "overpunch fields" do
+  describe "given overpunch fields" do
     let(:definition) do
       Pikelet.define do
-        value 0...4, type: :overpunch
+        value(0...4) { |value| Overpunch.parse(value) }
       end
     end
 

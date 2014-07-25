@@ -61,4 +61,26 @@ describe Pikelet::FieldDefinition do
       expect(value).to eq -672
     end
   end
+
+  describe "given a parser block" do
+    let(:indices) { [ 4...9] }
+    let(:definition) do
+      Pikelet::FieldDefinition.new(indices) { |value| value.reverse }
+    end
+
+    it "yields the value to the parser" do
+      expect(value).to eq "kciuq"
+    end
+  end
+
+  describe "given a symbol for the parser block" do
+    let(:indices) { [ 4...9] }
+    let(:definition) do
+      Pikelet::FieldDefinition.new(indices, &:upcase)
+    end
+
+    it "invokes the named method on the value" do
+      expect(value).to eq "QUICK"
+    end
+  end
 end

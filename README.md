@@ -196,27 +196,20 @@ Anyway, this is what we get when we parse it.
       last_name="Brahe",
       nickname="Tykester">
 
-### Numeric fields
+### Custom field parsing
 
-Pikelet can convert numeric fields to integers. To arrange for this, simply
-tell it what the field type is:
-
-    Pikelet.define do
-      a_number 0...4, type: :integer
-    end
-
-If you're into really, really old tech, it can also handle numbers in signed
-overpunch format:
+Field definitions can accept a block. If provided, the field value is yielded
+to the block. This is useful for parsing numeric fields (say).
 
     Pikelet.define do
-      a_number 0...4, type: :overpunch
+      a_number(0...4) { |value| value.to_i }
     end
 
-You can learn more about signed overpunch here:
-[https://github.com/johncarney/overpunch][overpunch]. It's kinda interesting,
-if you're some kind of tech hipster.
+You can also use shorthand syntax:
 
-Currently only integers and signed overpunch numbers are supported.
+    Pikelet.define do
+      a_number 0...4, &:to_i
+    end
 
 ### A stupid trick
 
@@ -237,7 +230,7 @@ different record types):
 
     Pikelet.define do
       type_signature  0... 3, 11...13
-      sequence        3...11, type: :integer
+      sequence        3...11, &:to_i
       payload        13.. -1
     end
 
@@ -266,12 +259,8 @@ of it and many, many more record types.
 
 ## Thoughts/plans
 
-* With a very small amount of work, Pikelet could produce flat file records
-  as easily as it consumes them.
-* The way integer fields are described is pretty ugly and I'd like to add the
-  ability to accept 'pluggable' field parsers.
-* I'd also like to ditch the signed overpunch, but it's the easiest way to
-  deal with a particular itch I need scratched right now.
+* With some work, Pikelet could produce flat file records as easily as it
+  consumes them.
 * I had a crack at supporting lazy enumeration, and it kinda works. Sometimes.
   If the moon is in the right quarter. I'd like to get it working properly.
 

@@ -2,22 +2,31 @@ require "overpunch"
 
 module Pikelet
   class FieldDefinition
-    attr_reader :indices, :type
+    attr_reader :indices, :parser
 
-    def initialize(indices, type: nil)
+    def initialize(indices, type: nil, &parser)
       @indices = indices
-      @type = type
+      if block_given?
+        @parser = parser
+      else
+        @parser = parser_from_type(type)
+      end
     end
 
     def parse(text)
-      value = indices.map { |index| text[index] }.join
+      @parser.call(indices.map { |index| text[index] }.join)
+    end
+
+    private
+
+    def parser_from_type(type)
       case type
       when :integer
-        value.to_i
+        :to_i.to_proc
       when :overpunch
-        Overpunch.parse(value)
+        Proc.new { |value| Overpunch.parse(value) }
       else
-        value.strip
+        :strip.to_proc
       end
     end
   end
