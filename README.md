@@ -39,10 +39,11 @@ Or install it yourself as:
 ### The simple case: homogeneous records
 
 Let's say our file is a simple list of first and last names with each field
-being 10 characters in width, padded with spaces.
+being 10 characters in width, padded with spaces (vertical pipes used to
+indicate field boundaries).
 
-    Nicolaus  Copernicus
-    Tycho     Brahe
+    |Nicolaus  |Copernicus|
+    |Tycho     |Brahe     |
 
 We can describe this format using Pikelet as follows:
 
@@ -83,8 +84,8 @@ Now let's say we're given a file consisting of names and addresses, each
 record contains a 4-character type signature - 'NAME' for names, 'ADDR' for
 addresses:
 
-    NAMENicolaus  Copernicus
-    ADDR123 South Street    Nowhereville        45678Y    Someplace
+    |NAME|Nicolaus  |Copernicus|
+    |ADDR|123 South Street     |Nowhereville        |45678Y    |Someplace           |
 
 We can describe it as follows:
 
@@ -160,8 +161,8 @@ that happens sometimes. If only I had a use for it.
 Now we go back to our original example, starting with a simple list of names,
 but this time some of the records include a nickname:
 
-    PLAINNicolaus  Copernicus
-    FANCYTycho     Brahe     Tykester
+    |PLAIN|Nicolaus  |Copernicus|
+    |FANCY|Tycho     |Brahe     |Tykester  |
 
 The first and last name fields have the same boundaries in each case, but the
 "FANCY" records have an additional field. We can describe this by nesting the
@@ -222,10 +223,10 @@ Currently only integers and signed overpunch numbers are supported.
 The `field` statement will actually accepts multiple ranges/indices and will
 simply glue the sections described together. Consider the following data:
 
-    BFH0000000101LONZZZ  203TEST1101022359GB000001
-    BCH00000002020111101007F110107
-    BOH000000030391200001101031                       GBP2
-    BKT0000000406      000001                    011X ZZZ
+    |BFH|00000001|01|LONZZZ  203TEST1101022359GB000001        |
+    |BCH|00000002|02|0111101007F110107                        |
+    |BOH|00000003|03|91200001101031                       GBP2|
+    |BKT|00000004|06|      000001                    011X ZZZ |
 
 In this format the first three characters are a 'message identifier', the next
 8 characters are a sequence number and the next 2 are a 'numeric qualifier'.
