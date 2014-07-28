@@ -1,22 +1,17 @@
+require "pikelet/record_definer"
+
 module Pikelet
   class RecordDefinition
     attr_reader :file_definition, :field_definitions
 
-    def initialize(file_definition, base_definition: nil, &block)
+    def initialize(file_definition, base_definition:)
       @file_definition = file_definition
       @field_definitions = base_definition && base_definition.field_definitions.dup || {}
-      if block_given?
-        instance_eval(&block)
-      end
     end
 
     def field(name, index, &block)
       @record_class = nil
       field_definitions[name] = Pikelet::FieldDefinition.new(index, &block)
-    end
-
-    def record(type_signature, &block)
-      file_definition.record(type_signature, base_definition: self, &block)
     end
 
     def parse(data)
@@ -25,10 +20,6 @@ module Pikelet
 
     def parse_hash(hash)
       record_class.new(*hash.values_at(*field_definitions.keys))
-    end
-
-    def method_missing(method, *args, &block)
-      field(method, *args, &block)
     end
 
     def record_class

@@ -3,12 +3,12 @@ module Pikelet
     attr_reader :base_record_definition
 
     def initialize(&block)
-      @base_record_definition = RecordDefinition.new(self, &block)
+      @base_record_definition = RecordDefiner.new(self).define(&block)
     end
 
     def record(type_signature, base_definition: nil, &block)
       base_definition ||= base_record_definition
-      record_definitions[type_signature] = RecordDefinition.new(self, base_definition: base_definition, &block)
+      record_definitions[type_signature] = RecordDefiner.new(self, base_definition: base_definition).define(&block)
     end
 
     def record_definitions

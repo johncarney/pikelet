@@ -4,7 +4,7 @@ require "pikelet"
 describe Pikelet::RecordDefinition do
   let(:data)  { "Hello world" }
   let(:definition) do
-    Pikelet::RecordDefinition.new(nil) do
+    Pikelet::RecordDefiner.new(nil, base_definition: nil).define do
       hello 0...5
       world 6..-1
     end
