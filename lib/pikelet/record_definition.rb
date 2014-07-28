@@ -23,6 +23,10 @@ module Pikelet
       record_class.new(*field_definitions.values.map { |field| field.parse(data) })
     end
 
+    def parse_hash(hash)
+      record_class.new(*hash.values_at(*field_definitions.keys))
+    end
+
     def method_missing(method, *args, &block)
       field(method, *args, &block)
     end
