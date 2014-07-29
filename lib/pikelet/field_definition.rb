@@ -8,7 +8,9 @@ module Pikelet
     end
 
     def parse(text)
-      parser.call(text[index])
+      if value = text[index]
+        parser.call(value)
+      end
     end
   end
 end

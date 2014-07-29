@@ -54,4 +54,12 @@ describe Pikelet::FieldDefinition do
       expect(value).to eq "QUICK"
     end
   end
+
+  describe "given an index not covered in the data" do
+    let(:index) { 999..999 }
+
+    it "parses as nil" do
+      expect(value).to be_nil
+    end
+  end
 end
