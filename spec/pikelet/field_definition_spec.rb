@@ -3,63 +3,90 @@ require "pikelet"
 require "csv"
 
 describe Pikelet::FieldDefinition do
-  let(:data)        { "The quick brown fox" }
-  let(:definition)  { Pikelet::FieldDefinition.new(index) }
+  let(:data)       { "The quick brown fox" }
+  let(:definition) { Pikelet::FieldDefinition.new(index) }
 
-  subject(:value) { definition.parse(data) }
+  subject(:result) { definition.parse(data) }
 
-  describe "for a fixed-width field" do
+  context "for a fixed-width field" do
     let(:index) { 4...9 }
 
     it "extracts the field content from the data" do
-      expect(value).to eq "quick"
+      expect(result).to eq "quick"
     end
   end
 
-  describe "given whitespace" do
+  context "given whitespace" do
     let(:index) { 3...16 }
 
     it "strips leading and trailing whitespace" do
-      expect(value).to eq "quick brown"
+      expect(result).to eq "quick brown"
     end
   end
 
-  describe "given a CSV row" do
+  context "given a CSV row" do
     let(:data)  { CSV.parse("The,quick,brown,fox").first }
     let(:index) { 2 }
 
     it "extracts the field" do
-      expect(value).to eq "brown"
+      expect(result).to eq "brown"
     end
   end
 
-  describe "given a parser block" do
-    let(:index) { 4...9 }
-    let(:definition) do
-      Pikelet::FieldDefinition.new(index) { |value| value.reverse }
+  context "given a custom parser" do
+    let(:parser) { ->(value) { value } }
+
+    before do
+      allow(parser).to receive(:call)
+      result
     end
 
-    it "yields the value to the parser" do
-      expect(value).to eq "kciuq"
+    context "as a block" do
+      let(:index)      { 4...9 }
+      let(:definition) { Pikelet::FieldDefinition.new(index, &parser) }
+
+      it "yields the value to the parser" do
+        expect(parser).to have_received(:call).with("quick")
+      end
+    end
+
+    context "as a parse option" do
+      let(:index)      { 10...15 }
+      let(:definition) { Pikelet::FieldDefinition.new(index, parse: parser) }
+
+      it "yields the value to the parser" do
+        expect(parser).to have_received(:call).with("brown")
+      end
     end
   end
 
-  describe "given a symbol for the parser block" do
-    let(:index) { 4...9 }
-    let(:definition) do
-      Pikelet::FieldDefinition.new(index, &:upcase)
+  context "given a shorthand parser" do
+    let(:parser) { :upcase }
+
+    context "as a block" do
+      let(:index)      { 10...15 }
+      let(:definition) { Pikelet::FieldDefinition.new(index, &parser) }
+
+      it "invokes the named method on the value" do
+        expect(result).to eq "BROWN"
+      end
     end
 
-    it "invokes the named method on the value" do
-      expect(value).to eq "QUICK"
+    context "as a parse option" do
+      let(:index)      { 4...9 }
+      let(:definition) { Pikelet::FieldDefinition.new(index, parse: parser) }
+
+      it "invokes the named method on the value" do
+        expect(result).to eq "QUICK"
+      end
     end
   end
 
-  describe "given an index not covered in the data" do
+  context "given an index not covered in the data" do
     let(:index) { 999..999 }
 
     it "parses as nil" do
-      expect(value).to be_nil
+      expect(result).to be_nil
     end
   end
 end

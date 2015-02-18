@@ -9,9 +9,9 @@ module Pikelet
       @field_definitions = base_definition && base_definition.field_definitions.dup || {}
     end
 
-    def field(name, index, &block)
+    def field(name, index, **options, &block)
       @record_class = nil
-      field_definitions[name] = Pikelet::FieldDefinition.new(index, &block)
+      field_definitions[name] = Pikelet::FieldDefinition.new(index, **options, &block)
     end
 
     def parse(data)

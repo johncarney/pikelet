@@ -132,6 +132,42 @@ describe Pikelet do
     its(:value) { is_expected.to eq 5637 }
   end
 
+  describe "given a parse option" do
+    let(:definition) do
+      Pikelet.define do
+        value 0...4, parse: ->(value) { value.to_i }
+      end
+    end
+
+    let(:data) do
+      <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        5637
+      FILE
+    end
+
+    subject { records.first }
+
+    its(:value) { is_expected.to eq 5637 }
+  end
+
+  describe "given a shorthand parse option" do
+    let(:definition) do
+      Pikelet.define do
+        value 0...4, parse: :to_i
+      end
+    end
+
+    let(:data) do
+      <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        5637
+      FILE
+    end
+
+    subject { records.first }
+
+    its(:value) { is_expected.to eq 5637 }
+  end
+
   describe "given a block when parsing" do
     let(:collected_records) { [] }
 

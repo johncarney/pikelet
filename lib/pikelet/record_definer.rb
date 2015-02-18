@@ -14,16 +14,16 @@ module Pikelet
       definition
     end
 
-    def field(name, index, &block)
-      definition.field(name, index, &block)
+    def field(name, index, **options, &block)
+      definition.field(name, index, **options, &block)
     end
 
     def record(type_signature, &block)
       file_definition.record(type_signature, base_definition: definition, &block)
     end
 
-    def method_missing(method, *args, &block)
-      field(method, *args, &block)
+    def method_missing(method, *args, **options, &block)
+      field(method, *args, **options, &block)
     end
   end
 end
