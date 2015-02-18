@@ -3,8 +3,9 @@ module Pikelet
     attr_reader :index, :parser, :width
 
     def initialize(index, parse: nil, &block)
+      raise ArgumentError, "index must be a range" unless index.is_a? Range
       @index = index
-      @width = index.respond_to?(:size) ? index.size : nil
+      @width = index.size
       @parser = parse || block || :strip
       @parser = @parser.to_proc unless @parser.respond_to? :call
     end
@@ -16,11 +17,7 @@ module Pikelet
     end
 
     def format(value)
-      if width
-        pad(truncate(value))
-      else
-        value
-      end
+      pad(truncate(value))
     end
 
     def insert(value, record)

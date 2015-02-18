@@ -100,27 +100,6 @@ describe Pikelet do
       its(:last)  { is_expected.to match_hash(name: "Sue",  number: "087654321", type_signature: "B") }
     end
 
-    describe "for a CSV file" do
-      let(:definition) do
-        Pikelet.define do
-          name   0
-          number 1
-        end
-      end
-
-      let(:data) do
-        CSV.parse <<-FILE.gsub(/^\s*/, "")
-          John,012345678
-          Sue,087654321
-        FILE
-      end
-
-      it { is_expected.to have(2).records }
-
-      its(:first) { is_expected.to match_hash(name: "John", number: "012345678") }
-      its(:last)  { is_expected.to match_hash(name: "Sue",  number: "087654321") }
-    end
-
     describe "inheritance" do
       let(:definition) do
         Pikelet.define do

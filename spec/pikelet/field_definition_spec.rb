@@ -25,15 +25,6 @@ describe Pikelet::FieldDefinition do
       end
     end
 
-    context "given a CSV row" do
-      let(:data)  { CSV.parse("The,quick,brown,fox").first }
-      let(:index) { 2 }
-
-      it "extracts the field" do
-        expect(parsed).to eq "brown"
-      end
-    end
-
     context "given a custom parser" do
       let(:parser) { ->(value) { value } }
 

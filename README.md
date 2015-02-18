@@ -4,6 +4,16 @@
 [![Build status][build-badge]][build]
 [![Coverage Status][coverage-badge]][coverage]
 
+## Beta notes
+
+The next release of Pikelet will be capable of formatting flat-file databases
+for output. As part of this I will be dropping CSV support as it is
+constraining my options and, as far as I know, nobody is using it. For the
+time being I want to let it evolve as a pure flat-file database parser. In a
+future release I may restore CSV support, but I make no promises.
+
+## Introduction
+
 A [pikelet][pikelet-recipe] is a small, delicious pancake popular in Australia
 and New Zealand. Also, the stage name of Australian musician
 [Evelyn Morris][pikelet-musician]. Also, a simple flat-file database parser
@@ -17,8 +27,7 @@ record types. Each record type has a different structure, though some types
 share common fields, and all types have a type signature.
 
 However, Pikelet will also handle more typical flat-file databases comprised
-of homogeneous records. Additionally, it will work equally as well with CSV
-files as it will with fixed-width records.
+of homogeneous records.
 
 ## Installation
 
@@ -123,38 +132,6 @@ When we parse the data, we end up with this:
       city="Nowhereville",
       postal_code="45678Y",
       state="Someplace">
-
-### Handling CSV files
-
-What happens if we were given the data in the previous example in CSV form?
-
-    NAME,Nicolaus,Copernicus
-    ADDR,123 South Street,Nowhereville,45678Y,Someplace
-
-In this case instead of describing fields with a boundary range, we just
-give it a simple (zero-based) index, like so:
-
-    Pikelet.define do
-      type_signature 0
-
-      record "NAME" do
-        first_name 1
-        last_name  2
-      end
-
-      record "ADDR" do
-        street_address 1
-        city           2
-        postal_code    3
-        state          4
-      end
-    end
-
-This yields the same results as above.
-
-Note that this ability to handle CSV was not planned - it just sprang
-fully-formed from the implementation. One of those pleasant little surprises
-that happens sometimes. If only I had a use for it.
 
 ### Inheritance
 
