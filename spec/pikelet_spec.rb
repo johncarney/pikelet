@@ -57,7 +57,7 @@ describe Pikelet do
       end
 
       let(:data) do
-        <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        <<-FILE.split(/[\r\n]+/).map(&:lstrip)
           John012345678
           Sue 087654321
         FILE
@@ -87,7 +87,7 @@ describe Pikelet do
       end
 
       let(:data) do
-        <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        <<-FILE.split(/[\r\n]+/).map(&:lstrip)
           AJohn012345678
           B087654321Sue
         FILE
@@ -137,7 +137,7 @@ describe Pikelet do
       end
 
       let(:data) do
-        <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        <<-FILE.split(/[\r\n]+/).map(&:lstrip)
           SIMPLEJohn012345678
           FANCY Sue 087654321
         FILE
@@ -157,7 +157,7 @@ describe Pikelet do
       end
 
       let(:data) do
-        <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        <<-FILE.split(/[\r\n]+/).map(&:lstrip)
           5637
         FILE
       end
@@ -175,7 +175,7 @@ describe Pikelet do
       end
 
       let(:data) do
-        <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        <<-FILE.split(/[\r\n]+/).map(&:lstrip)
           5637
         FILE
       end
@@ -193,7 +193,7 @@ describe Pikelet do
       end
 
       let(:data) do
-        <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        <<-FILE.split(/[\r\n]+/).map(&:lstrip)
           5637
         FILE
       end
@@ -214,7 +214,7 @@ describe Pikelet do
       end
 
       let(:data) do
-        <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+        <<-FILE.split(/[\r\n]+/).map(&:lstrip)
           John012345678
           Sue 087654321
         FILE
@@ -241,7 +241,7 @@ describe Pikelet do
     end
 
     let(:data) do
-      <<-FILE.gsub(/^\s*/, "").split(/[\r\n]+/)
+      <<-FILE.split(/[\r\n]+/).map(&:lstrip)
         John012345678
         Sue 087654321
       FILE
