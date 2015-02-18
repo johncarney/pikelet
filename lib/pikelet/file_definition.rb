@@ -23,7 +23,21 @@ module Pikelet
       parse_records(hashes, method: :parse_hash, &block)
     end
 
+    def format(records)
+      records.map { |record| format_record(record, width: width) }
+    end
+
+    def width
+      record_definitions.values.map(&:width).max
+    end
+
     private
+
+    def format_record(record, width:)
+      record_definition = record.respond_to?(:type_signature) && record_definitions[record.type_signature]
+      record_definition ||= base_record_definition
+      record_definition.format(record, width: width)
+    end
 
     def parse_records(data, method:, &block)
       records = Enumerator.new do |y|

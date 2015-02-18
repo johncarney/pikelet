@@ -22,8 +22,19 @@ module Pikelet
       record_class.new(*hash.values_at(*field_definitions.keys))
     end
 
+    def format(record, width: nil)
+      width ||= self.width
+      field_definitions.each_with_object(" " * width) do |(field_name, field_definition), result|
+        field_definition.insert(record.send(field_name.to_sym), result)
+      end
+    end
+
     def record_class
       @record_class ||= Struct.new(*field_definitions.keys.map(&:to_sym))
+    end
+
+    def width
+      field_definitions.values.map(&:width).inject(&:+)
     end
   end
 end
