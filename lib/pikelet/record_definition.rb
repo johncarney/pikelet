@@ -27,7 +27,7 @@ module Pikelet
     end
 
     def parse(data)
-      record_class.new(*field_definitions.values.map { |field| field.parse(data) })
+      record_class.new(parse_fields(data))
     end
 
     def format(record, width: nil)
@@ -38,11 +38,27 @@ module Pikelet
     end
 
     def record_class
-      @record_class ||= Struct.new(*field_definitions.keys.map(&:to_sym))
+      @record_class ||= Struct.new(*field_names) do
+        def initialize(**attrs)
+          super(*attrs.values_at(*self.class.members))
+        end
+      end
     end
 
     def width
       field_definitions.values.map { |d| d.index.max }.max + 1
+    end
+
+    private
+
+    def field_names
+      field_definitions.keys.map(&:to_sym)
+    end
+
+    def parse_fields(data)
+      field_definitions.each_with_object({}) do |(field, definition), result|
+        result[field.to_sym] = definition.parse(data)
+      end
     end
   end
 end
