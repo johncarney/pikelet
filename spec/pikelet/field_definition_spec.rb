@@ -3,22 +3,22 @@ require "pikelet"
 require "csv"
 
 describe Pikelet::FieldDefinition do
-  let(:parser)        { { } }
-  let(:formatter)     { { } }
-  let(:padding)       { { } }
-  let(:justification) { { } }
-  let(:block)         { nil }
-  let(:definition)    { Pikelet::FieldDefinition.new(index, **parser, **formatter, **padding, **justification, &block) }
+  let(:parser)     { { } }
+  let(:formatter)  { { } }
+  let(:padding)    { { } }
+  let(:alignment)  { { } }
+  let(:block)      { nil }
+  let(:definition) { Pikelet::FieldDefinition.new(index, **parser, **formatter, **padding, **alignment, &block) }
 
   describe "defaults" do
     let(:index) { 0...1 }
 
-    subject     { definition }
+    subject { definition }
 
-    its(:parser)        { is_expected.to eq :strip }
-    its(:formatter)     { is_expected.to eq :to_s }
-    its(:padding)       { is_expected.to eq " " }
-    its(:justification) { is_expected.to eq :right }
+    its(:parser)    { is_expected.to eq :strip }
+    its(:formatter) { is_expected.to eq :to_s }
+    its(:padding)   { is_expected.to eq " " }
+    its(:alignment) { is_expected.to eq :right }
   end
 
   describe "#parse" do
@@ -170,7 +170,7 @@ describe Pikelet::FieldDefinition do
       end
     end
 
-    describe "padding & justification" do
+    describe "padding & alignment" do
       let(:index) { 3...7 }
 
       context "given a value that fits the field exactly" do
@@ -184,8 +184,8 @@ describe Pikelet::FieldDefinition do
       context "given a value that underflows the field" do
         let(:value) { "12" }
 
-        context "with left justification" do
-          let(:justification) { { justify: :left } }
+        context "with left alignment" do
+          let(:alignment) { { align: :left } }
 
           context "with single-character padding" do
             let(:padding) { { pad: '-' } }
@@ -204,8 +204,8 @@ describe Pikelet::FieldDefinition do
           end
         end
 
-        context "with right justification" do
-          let(:justification) { { justify: :right } }
+        context "with right alignment" do
+          let(:alignment) { { align: :right } }
 
           context "with single-character padding" do
             let(:padding) { { pad: '-' } }

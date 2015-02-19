@@ -1,15 +1,15 @@
 module Pikelet
   class FieldDefinition
-    attr_reader :index, :parser, :formatter, :padding, :justification, :width
+    attr_reader :index, :parser, :formatter, :padding, :alignment, :width
 
-    def initialize(index, parse: nil, format: nil, pad: nil, justify: nil, &block)
+    def initialize(index, parse: nil, format: nil, pad: nil, align: nil, &block)
       raise ArgumentError, "index must be a range" unless index.is_a? Range
       @index = index
       @width = index.size
       @parser = parse || block || :strip
       @formatter = format || :to_s
       @padding = pad && pad.to_s || " "
-      @justification = justify || :right
+      @alignment = align || :right
     end
 
     def parse(record)
@@ -38,7 +38,7 @@ module Pikelet
     end
 
     def pad(value)
-      if justification == :left
+      if alignment == :left
         value + blank[value.size...width]
       else
         blank[-width..-(1+value.size)] + value
