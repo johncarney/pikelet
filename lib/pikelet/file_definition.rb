@@ -2,13 +2,14 @@ module Pikelet
   class FileDefinition
     attr_reader :base_record_definition
 
-    def initialize(&block)
-      @base_record_definition = RecordDefiner.new(self).define(&block)
+    def initialize(record_class: nil, &block)
+      @base_record_definition = RecordDefiner.new(self, record_class: record_class).define(&block)
     end
 
-    def record(type_signature, base_definition: nil, &block)
+    def record(type_signature, record_class: nil, base_definition: nil, &block)
       base_definition ||= base_record_definition
-      record_definitions[type_signature] = RecordDefiner.new(self, base_definition: base_definition).define(&block)
+      definer = RecordDefiner.new(self, record_class: record_class, base_definition: base_definition)
+      record_definitions[type_signature] = definer.define(&block)
     end
 
     def record_definitions

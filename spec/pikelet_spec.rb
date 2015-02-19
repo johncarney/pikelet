@@ -9,6 +9,36 @@ describe Pikelet do
     end
   end
 
+  describe "custom record classes" do
+    let(:custom_class) do
+      Class.new do
+        attr_reader :first_name, :last_name
+
+        def initialize(**attrs)
+          @first_name = attrs[:first_name]
+          @last_name = attrs[:last_name]
+        end
+      end
+    end
+
+    let(:definition) do
+      Pikelet.define record_class: custom_class do
+        first_name  0...10
+        last_name  10...20
+      end
+    end
+
+    let(:data)       { [ "Nicolaus  Copernicus" ] }
+    subject(:record) { definition.parse(data).to_a.first }
+
+    it "uses the supplied record class" do
+      expect(record).to be_a custom_class
+    end
+
+    its(:first_name) { is_expected.to eq "Nicolaus" }
+    its(:last_name)  { is_expected.to eq "Copernicus" }
+  end
+
   describe "#format" do
     let(:definition) do
       Pikelet.define do

@@ -5,13 +5,13 @@ module Pikelet
     attr_reader :file_definition, :field_definitions
     attr_writer :type_signature
 
-    def initialize(file_definition, base_definition:)
+    def initialize(file_definition, record_class: nil, base_definition:)
       @file_definition = file_definition
       @field_definitions = base_definition && base_definition.field_definitions.dup || {}
+      @record_class = record_class
     end
 
     def field(name, index, **options, &block)
-      @record_class = nil
       field_definitions[name] = Pikelet::FieldDefinition.new(index, **options, &block)
     end
 
@@ -38,9 +38,14 @@ module Pikelet
     end
 
     def record_class
-      @record_class ||= Struct.new(*field_names) do
-        def initialize(**attrs)
-          super(*attrs.values_at(*self.class.members))
+      @record_class ||= default_record_class
+    end
+
+    def default_record_class
+      Struct.new(*field_names) do
+        def initialize(**attributes)
+          # FIXME: Do we need to worry about missing attributes?
+          super(*attributes.values_at(*self.class.members))
         end
       end
     end
