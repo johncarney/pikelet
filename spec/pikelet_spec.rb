@@ -39,8 +39,8 @@ describe Pikelet do
 
     it { is_expected.to have(2).lines }
 
-    its(:first) { is_expected.to eq "NAME  NicolausCopernicus                                                  " }
-    its(:last)  { is_expected.to eq "ADDR    123 South Street        Nowhereville    45678Y           Someplace" }
+    its(:first) { is_expected.to eq "NAMENicolaus  Copernicus                                                  " }
+    its(:last)  { is_expected.to eq "ADDR123 South Street    Nowhereville        45678Y    Someplace           " }
   end
 
   describe "#parse" do

@@ -9,7 +9,7 @@ module Pikelet
       @parser = parse || block || :strip
       @formatter = format || :to_s
       @padding = pad && pad.to_s || " "
-      @alignment = align || :right
+      @alignment = align || :left
     end
 
     def parse(record)
