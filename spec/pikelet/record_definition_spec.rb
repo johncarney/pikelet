@@ -2,9 +2,12 @@ require "spec_helper"
 require "pikelet"
 
 describe Pikelet::RecordDefinition do
-  let(:data)  { "Hello world" }
+  let(:definer) { Pikelet::RecordDefiner.new(nil, base_definition: nil) }
+
+  let(:data)    { "Hello world" }
+
   let(:definition) do
-    Pikelet::RecordDefiner.new(nil, base_definition: nil).define do
+    definer.define do
       hello 0... 5
       world 6...11
     end
@@ -41,6 +44,49 @@ describe Pikelet::RecordDefinition do
       end
 
       its(:type_signature) { is_expected.to eq :type_signature }
+    end
+  end
+
+  describe "#width" do
+    subject(:width) { definition.width }
+
+    context "with contiguous fields" do
+      let(:definition) do
+        definer.define do
+          hello 0... 5
+          world 6...11
+        end
+      end
+
+      it "returns the width of the record" do
+        expect(width).to eq 11
+      end
+    end
+
+    context "with overlapping fields" do
+      let(:definition) do
+        definer.define do
+          hello 0..6
+          world 4..9
+        end
+      end
+
+      it "returns the width of the record" do
+        expect(width).to eq 10
+      end
+    end
+
+    context "with discontinuous fields" do
+      let(:definition) do
+        definer.define do
+          hello 4... 7
+          world 9...16
+        end
+      end
+
+      it "returns the width of the record" do
+        expect(width).to eq 16
+      end
     end
   end
 end

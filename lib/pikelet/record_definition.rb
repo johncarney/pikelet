@@ -42,7 +42,7 @@ module Pikelet
     end
 
     def width
-      field_definitions.values.map(&:width).inject(&:+)
+      field_definitions.values.map { |d| d.index.max }.max + 1
     end
   end
 end
