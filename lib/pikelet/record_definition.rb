@@ -5,10 +5,11 @@ module Pikelet
     attr_reader :file_definition, :field_definitions
     attr_writer :type_signature
 
-    def initialize(file_definition, record_class: nil, base_definition:)
+    def initialize(file_definition, type_signature: nil, record_class: nil, base_definition:)
       @file_definition = file_definition
       @field_definitions = base_definition && base_definition.field_definitions.dup || {}
       @record_class = record_class
+      @type_signature = type_signature
     end
 
     def field(name, index, **options, &block)
@@ -16,10 +17,7 @@ module Pikelet
     end
 
     def type_signature
-      unless defined? @type_signature
-        @type_signature = :type_signature if field_definitions.key? :type_signature
-      end
-      @type_signature
+      @type_signature ||= field_definitions.key?(:type_signature) ? :type_signature : nil
     end
 
     def signature_field
