@@ -18,6 +18,15 @@ module Pikelet
       definition.field(name, index, **options, &block)
     end
 
+    def type_signature(field_or_index, **options, &block)
+      if field_or_index.is_a? Range
+        field(:type_signature, field_or_index, **options, &block)
+        definition.type_signature = :type_signature
+      else
+        definition.type_signature = field_or_index
+      end
+    end
+
     def record(type_signature, &block)
       file_definition.record(type_signature, base_definition: definition, &block)
     end

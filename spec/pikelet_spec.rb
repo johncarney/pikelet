@@ -210,27 +210,4 @@ describe Pikelet do
       end
     end
   end
-
-  describe "#parse_hashes" do
-    let(:definition) do
-      Pikelet.define do
-        name   0... 4
-        number 4...13
-      end
-    end
-
-    let(:data) do
-      <<-FILE.split(/[\r\n]+/).map(&:lstrip)
-        John012345678
-        Sue 087654321
-      FILE
-    end
-
-    let(:records) { definition.parse(data) }
-    let(:hashes)  { records.map(&:to_h) }
-
-    subject { definition.parse_hashes(hashes).to_a }
-
-    it { is_expected.to eq records.to_a }
-  end
 end

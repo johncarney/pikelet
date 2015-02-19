@@ -10,20 +10,37 @@ describe Pikelet::RecordDefinition do
     end
   end
 
-  describe "#parse_hash" do
-    let(:record)      { definition.parse(data) }
-    let(:record_hash) { Hash[record.to_h.to_a.reverse] }
-
-    subject { definition.parse_hash(record_hash) }
-
-    it { is_expected.to eq record }
-  end
-
   describe "#format" do
     let(:record) { OpenStruct.new(hello: "Hello", world: "world") }
 
     subject { definition.format(record) }
 
     it { is_expected.to eq "Hello world" }
+  end
+
+  describe "#type_signature" do
+    let(:definition) { described_class.new(nil, base_definition: nil) }
+
+    subject { definition }
+
+    context "with no fields and no signature defined" do
+      its(:type_signature) { is_expected.to be_nil }
+    end
+
+    context "with signature defined" do
+      before do
+        definition.type_signature = :type
+      end
+
+      its(:type_signature) { is_expected.to eq :type }
+    end
+
+    context "with a field named :type_signature" do
+      before do
+        definition.field(:type_signature, 0...3)
+      end
+
+      its(:type_signature) { is_expected.to eq :type_signature }
+    end
   end
 end

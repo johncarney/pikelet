@@ -16,11 +16,7 @@ module Pikelet
     end
 
     def parse(data, &block)
-      parse_records(data, method: :parse, &block)
-    end
-
-    def parse_hashes(hashes, &block)
-      parse_records(hashes, method: :parse_hash, &block)
+      parse_records(data, &block)
     end
 
     def format(records)
@@ -33,33 +29,38 @@ module Pikelet
 
     private
 
+    def records_with_type_signatures
+      [ base_record_definition, *record_definitions.values ].select(&:type_signature)
+    end
+
+    def type_signatures
+      records_with_type_signatures.map(&:type_signature).uniq
+    end
+
+    def best_definition(signatures)
+      signatures.map { |sig| record_definitions[sig] }.detect { |d| d } || base_record_definition
+    end
+
     def format_record(record, width:)
-      record_definition = record.respond_to?(:type_signature) && record_definitions[record.type_signature]
-      record_definition ||= base_record_definition
-      record_definition.format(record, width: width)
+      signatures = type_signatures.lazy.select(&record.method(:respond_to?)).map(&record.method(:send))
+      best_definition(signatures).format(record, width: width)
     end
 
-    def parse_records(data, method:, &block)
-      records = Enumerator.new do |y|
-        data.each do |data|
-          y.yield(parse_record(data, method: method))
+    def parse_records(data, &block)
+      data.map(&method(:parse_record)).tap do |records|
+        if block_given?
+          records.each(&block)
         end
-      end
-      if block_given?
-        records.each(&block)
-      else
-        records
       end
     end
 
-    def parse_record(data, method:)
-      record = base_record_definition.send(method, data)
-      if record.respond_to?(:type_signature)
-        if definition = record_definitions[record.type_signature]
-          record = definition.send(method, data)
-        end
-      end
-      record
+    def signature_fields
+      records_with_type_signatures.map(&:signature_field).uniq
+    end
+
+    def parse_record(data)
+      signatures = signature_fields.lazy.map { |field| field.parse(data) }
+      best_definition(signatures).parse(data)
     end
   end
 end
