@@ -2,7 +2,7 @@ require "spec_helper"
 require "pikelet"
 
 describe Pikelet::RecordDefinition do
-  let(:definer) { Pikelet::RecordDefiner.new(nil, base_definition: nil) }
+  let(:definer) { Pikelet::RecordDefiner.new(nil, base: nil) }
 
   let(:data)    { "Hello world" }
 
@@ -22,7 +22,7 @@ describe Pikelet::RecordDefinition do
   end
 
   describe "#type_signature" do
-    let(:definition) { described_class.new(nil, base_definition: nil) }
+    let(:definition) { described_class.new(nil, base: nil) }
 
     subject { definition }
 

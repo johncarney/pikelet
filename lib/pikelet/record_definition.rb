@@ -5,9 +5,9 @@ module Pikelet
     attr_reader :file_definition, :field_definitions
     attr_writer :type_signature
 
-    def initialize(file_definition, type_signature: nil, record_class: nil, base_definition:)
+    def initialize(file_definition, type_signature: nil, record_class: nil, base:)
       @file_definition = file_definition
-      @field_definitions = base_definition && base_definition.field_definitions.dup || {}
+      @field_definitions = base && base.field_definitions.dup || {}
       @record_class = record_class
       @type_signature = type_signature
     end
@@ -42,7 +42,6 @@ module Pikelet
     def default_record_class
       Struct.new(*field_names) do
         def initialize(**attributes)
-          # FIXME: Do we need to worry about missing attributes?
           super(*attributes.values_at(*self.class.members))
         end
       end

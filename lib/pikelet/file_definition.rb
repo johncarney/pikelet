@@ -1,15 +1,14 @@
 module Pikelet
   class FileDefinition
-    attr_reader :base_record_definition
+    attr_reader :base
 
     def initialize(type_signature: nil, record_class: nil, &block)
       definer = RecordDefiner.new(self, type_signature: type_signature, record_class: record_class)
-      @base_record_definition = definer.define(&block)
+      @base = definer.define(&block)
     end
 
-    def record(type_signature, record_class: nil, base_definition: nil, &block)
-      base_definition ||= base_record_definition
-      definer = RecordDefiner.new(self, record_class: record_class, base_definition: base_definition)
+    def record(type_signature, record_class: nil, base: nil, &block)
+      definer = RecordDefiner.new(self, record_class: record_class, base: base || self.base)
       record_definitions[type_signature] = definer.define(&block)
     end
 
@@ -32,7 +31,7 @@ module Pikelet
     private
 
     def records_with_type_signatures
-      [ base_record_definition, *record_definitions.values ].select(&:type_signature)
+      [ base, *record_definitions.values ].select(&:type_signature)
     end
 
     def type_signatures
@@ -40,7 +39,7 @@ module Pikelet
     end
 
     def best_definition(signatures)
-      signatures.map { |sig| record_definitions[sig] }.detect { |d| d } || base_record_definition
+      signatures.map { |sig| record_definitions[sig] }.detect { |d| d } || base
     end
 
     def format_record(record, width:)
