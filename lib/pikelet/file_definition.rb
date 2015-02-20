@@ -4,7 +4,9 @@ module Pikelet
 
     def initialize(signature_field: nil, record_class: nil, &block)
       @signature_field = signature_field
-      @base = define_record(nil, record_class: record_class, base: nil, &block)
+      if block_given?
+        @base = define_record(nil, record_class: record_class, base: nil, &block)
+      end
     end
 
     def define_record(signature, record_class:, base:, &block)
@@ -31,7 +33,7 @@ module Pikelet
 
     def record_signature(record)
       field = signature_field || (record_definitions.values.detect(&:signature_field) && :type_signature)
-      record.send(field) if record.respond_to?(field)
+      record.send(field) if field && record.respond_to?(field)
     end
 
     def format_record(record, width:)
