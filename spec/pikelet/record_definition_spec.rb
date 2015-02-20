@@ -2,12 +2,14 @@ require "spec_helper"
 require "pikelet"
 
 describe Pikelet::RecordDefinition do
-  let(:definer) { Pikelet::RecordDefiner.new(nil, base: nil) }
+  def define_record(&block)
+    Pikelet::RecordDefiner.define(nil, base: nil, &block)
+  end
 
-  let(:data)    { "Hello world" }
+  let(:data) { "Hello world" }
 
   let(:definition) do
-    definer.define do
+    define_record do
       hello 0... 5
       world 6...11
     end
@@ -26,7 +28,7 @@ describe Pikelet::RecordDefinition do
 
     context "with contiguous fields" do
       let(:definition) do
-        definer.define do
+        define_record do
           hello 0... 5
           world 6...11
         end
@@ -39,7 +41,7 @@ describe Pikelet::RecordDefinition do
 
     context "with overlapping fields" do
       let(:definition) do
-        definer.define do
+        define_record do
           hello 0..6
           world 4..9
         end
@@ -52,7 +54,7 @@ describe Pikelet::RecordDefinition do
 
     context "with discontinuous fields" do
       let(:definition) do
-        definer.define do
+        define_record do
           hello 4... 7
           world 9...16
         end

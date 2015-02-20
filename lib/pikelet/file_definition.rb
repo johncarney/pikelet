@@ -4,12 +4,11 @@ module Pikelet
 
     def initialize(signature_field: nil, record_class: nil, &block)
       @signature_field = signature_field
-      @base = record(nil, record_class: record_class, base: nil, &block)
+      @base = define_record(nil, record_class: record_class, base: nil, &block)
     end
 
-    def record(signature, record_class:, base:, &block)
-      definer = RecordDefiner.new(self, record_class: record_class, base: base)
-      record_definitions[signature] = definer.define(&block)
+    def define_record(signature, record_class:, base:, &block)
+      record_definitions[signature] = RecordDefiner.define(self, record_class: record_class, base: base, &block)
     end
 
     def record_definitions
@@ -53,8 +52,8 @@ module Pikelet
     end
 
     def parse_record(data)
-      signatures = signature_fields.lazy.map { |field| field.parse(data) }
-      definition = signatures.map { |sig| record_definitions[sig] }.detect { |defn| defn } || base
+      signatures = signature_fields.lazy.map { |field| field.parse(data) }.reject(&:nil?)
+      definition = signatures.map { |sig| record_definitions[sig] }.reject(&:nil?).first || base
       definition.parse(data)
     end
   end
