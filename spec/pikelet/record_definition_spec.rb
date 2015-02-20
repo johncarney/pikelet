@@ -21,32 +21,6 @@ describe Pikelet::RecordDefinition do
     it { is_expected.to eq "Hello world" }
   end
 
-  describe "#type_signature" do
-    let(:definition) { described_class.new(nil, base: nil) }
-
-    subject { definition }
-
-    context "with no fields and no signature defined" do
-      its(:type_signature) { is_expected.to be_nil }
-    end
-
-    context "with signature defined" do
-      before do
-        definition.type_signature = :type
-      end
-
-      its(:type_signature) { is_expected.to eq :type }
-    end
-
-    context "with a field named :type_signature" do
-      before do
-        definition.field(:type_signature, 0...3)
-      end
-
-      its(:type_signature) { is_expected.to eq :type_signature }
-    end
-  end
-
   describe "#width" do
     subject(:width) { definition.width }
 

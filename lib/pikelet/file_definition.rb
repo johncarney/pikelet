@@ -1,15 +1,16 @@
 module Pikelet
   class FileDefinition
-    attr_reader :base
+    attr_reader :base, :signature_field
 
-    def initialize(type_signature: nil, record_class: nil, &block)
-      definer = RecordDefiner.new(self, type_signature: type_signature, record_class: record_class)
+    def initialize(signature_field: nil, record_class: nil, &block)
+      @signature_field = signature_field
+      definer = RecordDefiner.new(self, record_class: record_class)
       @base = definer.define(&block)
     end
 
-    def record(type_signature, record_class: nil, base: nil, &block)
+    def record(signature, record_class: nil, base: nil, &block)
       definer = RecordDefiner.new(self, record_class: record_class, base: base || self.base)
-      record_definitions[type_signature] = definer.define(&block)
+      record_definitions[signature] = definer.define(&block)
     end
 
     def record_definitions
@@ -30,8 +31,12 @@ module Pikelet
 
     private
 
+    def all_record_definitions
+      [ base, *record_definitions.values ]
+    end
+
     def records_with_type_signatures
-      [ base, *record_definitions.values ].select(&:type_signature)
+      all_record_definitions.select(&:type_signature)
     end
 
     def type_signatures
@@ -42,9 +47,14 @@ module Pikelet
       signatures.map { |sig| record_definitions[sig] }.detect { |d| d } || base
     end
 
+    def record_signature(record)
+      field = signature_field || (all_record_definitions.detect(&:signature_field) && :type_signature)
+      record.send(field) if record.respond_to?(field)
+    end
+
     def format_record(record, width:)
-      signatures = type_signatures.lazy.select(&record.method(:respond_to?)).map(&record.method(:send))
-      best_definition(signatures).format(record, width: width)
+      definition = record_definitions[record_signature(record)] || base
+      definition.format(record, width: width)
     end
 
     def parse_records(data, &block)
@@ -56,12 +66,13 @@ module Pikelet
     end
 
     def signature_fields
-      records_with_type_signatures.map(&:signature_field).uniq
+      all_record_definitions.map(&:signature_field).compact.uniq
     end
 
     def parse_record(data)
       signatures = signature_fields.lazy.map { |field| field.parse(data) }
-      best_definition(signatures).parse(data)
+      definition = signatures.map { |sig| record_definitions[sig] }.detect { |defn| defn } || base
+      definition.parse(data)
     end
   end
 end
