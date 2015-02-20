@@ -4,12 +4,11 @@ module Pikelet
 
     def initialize(signature_field: nil, record_class: nil, &block)
       @signature_field = signature_field
-      definer = RecordDefiner.new(self, record_class: record_class)
-      @base = definer.define(&block)
+      @base = record(nil, record_class: record_class, base: nil, &block)
     end
 
-    def record(signature, record_class: nil, base: nil, &block)
-      definer = RecordDefiner.new(self, record_class: record_class, base: base || self.base)
+    def record(signature, record_class:, base:, &block)
+      definer = RecordDefiner.new(self, record_class: record_class, base: base)
       record_definitions[signature] = definer.define(&block)
     end
 
@@ -31,29 +30,13 @@ module Pikelet
 
     private
 
-    def all_record_definitions
-      [ base, *record_definitions.values ]
-    end
-
-    def records_with_type_signatures
-      all_record_definitions.select(&:type_signature)
-    end
-
-    def type_signatures
-      records_with_type_signatures.map(&:type_signature).uniq
-    end
-
-    def best_definition(signatures)
-      signatures.map { |sig| record_definitions[sig] }.detect { |d| d } || base
-    end
-
     def record_signature(record)
-      field = signature_field || (all_record_definitions.detect(&:signature_field) && :type_signature)
+      field = signature_field || (record_definitions.values.detect(&:signature_field) && :type_signature)
       record.send(field) if record.respond_to?(field)
     end
 
     def format_record(record, width:)
-      definition = record_definitions[record_signature(record)] || base
+      definition = record_definitions[record_signature(record)]
       definition.format(record, width: width)
     end
 
@@ -66,7 +49,7 @@ module Pikelet
     end
 
     def signature_fields
-      all_record_definitions.map(&:signature_field).compact.uniq
+      record_definitions.values.map(&:signature_field).compact.uniq
     end
 
     def parse_record(data)
