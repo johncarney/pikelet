@@ -199,7 +199,7 @@ describe Pikelet::FieldDefinition do
             let(:padding) { { pad: '<->' } }
 
             it "pads the field on the right" do
-              expect(formatted).to eq "12><"
+              expect(formatted).to eq "12<-"
             end
           end
         end
@@ -219,7 +219,7 @@ describe Pikelet::FieldDefinition do
             let(:padding) { { pad: '<->' } }
 
             it "pads the field on the left" do
-              expect(formatted).to eq "><12"
+              expect(formatted).to eq "<-12"
             end
           end
         end

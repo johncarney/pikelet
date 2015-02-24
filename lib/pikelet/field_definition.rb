@@ -10,6 +10,11 @@ module Pikelet
       @formatter = format || :to_s
       @padding = pad && pad.to_s || " "
       @alignment = align || :left
+      if alignment == :right
+        @align_method = :rjust
+      else
+        @align_method = :ljust
+      end
     end
 
     def parse(record)
@@ -19,7 +24,7 @@ module Pikelet
     end
 
     def format(value)
-      pad(truncate(formatter.to_proc.call(value)))
+      align(formatter.to_proc.call(value))[0...width]
     end
 
     def insert(value, record)
@@ -29,20 +34,10 @@ module Pikelet
 
     private
 
-    def blank
-      @blank ||= padding * width
-    end
+    attr_reader :align_method
 
-    def truncate(value)
-      value[0...width]
-    end
-
-    def pad(value)
-      if alignment == :left
-        value + blank[value.size...width]
-      else
-        blank[-width..-(1+value.size)] + value
-      end
+    def align(value)
+      value.send(align_method, width, padding)
     end
   end
 end
