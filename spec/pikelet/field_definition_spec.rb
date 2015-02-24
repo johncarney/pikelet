@@ -174,7 +174,7 @@ describe Pikelet::FieldDefinition do
       let(:index) { 3...7 }
 
       context "given a value that fits the field exactly" do
-        let(:value)         { "1234" }
+        let(:value) { "1234" }
 
         it "does not pad the field" do
           expect(formatted).to eq value
