@@ -7,7 +7,7 @@ module Pikelet
       @definition = RecordDefinition.new(file_definition, record_class: record_class, base: base)
     end
 
-    def field(name, index, **options, &block)
+    def field(name, index, *flags, **options, &block)
       definition.field(name, index, **options, &block)
     end
 

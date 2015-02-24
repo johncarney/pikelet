@@ -7,8 +7,9 @@ describe Pikelet::FieldDefinition do
   let(:formatter)  { { } }
   let(:padding)    { { } }
   let(:alignment)  { { } }
+  let(:type)       { { } }
   let(:block)      { nil }
-  let(:definition) { Pikelet::FieldDefinition.new(index, **parser, **formatter, **padding, **alignment, &block) }
+  let(:definition) { Pikelet::FieldDefinition.new(index, **type, **parser, **formatter, **padding, **alignment, &block) }
 
   describe "defaults" do
     let(:index) { 0...1 }
@@ -19,6 +20,13 @@ describe Pikelet::FieldDefinition do
     its(:formatter) { is_expected.to eq :to_s }
     its(:padding)   { is_expected.to eq " " }
     its(:alignment) { is_expected.to eq :left }
+
+    context "for numeric type" do
+      let(:type) { { type: :numeric } }
+
+      its(:padding)   { is_expected.to eq "0" }
+      its(:alignment) { is_expected.to eq :right }
+    end
   end
 
   describe "#parse" do
@@ -183,6 +191,26 @@ describe Pikelet::FieldDefinition do
 
       context "given a value that underflows the field" do
         let(:value) { "12" }
+
+        context "with center alignment" do
+          let(:alignment) { { align: :center } }
+
+          context "with single-character padding" do
+            let(:padding) { { pad: '-' } }
+
+            it "pads the field on the left and right" do
+              expect(formatted).to eq "-12-"
+            end
+          end
+
+          context "with multi-character padding" do
+            let(:padding) { { pad: '<->' } }
+
+            it "pads the field on the left and right" do
+              expect(formatted).to eq "<12<"
+            end
+          end
+        end
 
         context "with left alignment" do
           let(:alignment) { { align: :left } }
