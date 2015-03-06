@@ -2,20 +2,67 @@ require "spec_helper"
 require "pikelet"
 
 describe Pikelet::RecordDefinition do
-  let(:data)  { "Hello world" }
+  def define_record(&block)
+    Pikelet::RecordDefiner.define(nil, base: nil, &block)
+  end
+
+  let(:data) { "Hello world" }
+
   let(:definition) do
-    Pikelet::RecordDefiner.new(nil, base_definition: nil).define do
-      hello 0...5
-      world 6..-1
+    define_record do
+      hello 0... 5
+      world 6...11
     end
   end
-  let(:record)  { definition.parse(data) }
 
-  describe "#parse_hash" do
-    let(:record_hash)  { Hash[record.to_h.to_a.reverse] }
+  describe "#format" do
+    let(:record) { OpenStruct.new(hello: "Hello", world: "world") }
 
-    subject { definition.parse_hash(record_hash) }
+    subject { definition.format(record) }
 
-    it { is_expected.to eq record }
+    it { is_expected.to eq "Hello world" }
+  end
+
+  describe "#width" do
+    subject(:width) { definition.width }
+
+    context "with contiguous fields" do
+      let(:definition) do
+        define_record do
+          hello 0... 5
+          world 6...11
+        end
+      end
+
+      it "returns the width of the record" do
+        expect(width).to eq 11
+      end
+    end
+
+    context "with overlapping fields" do
+      let(:definition) do
+        define_record do
+          hello 0..6
+          world 4..9
+        end
+      end
+
+      it "returns the width of the record" do
+        expect(width).to eq 10
+      end
+    end
+
+    context "with discontinuous fields" do
+      let(:definition) do
+        define_record do
+          hello 4... 7
+          world 9...16
+        end
+      end
+
+      it "returns the width of the record" do
+        expect(width).to eq 16
+      end
+    end
   end
 end

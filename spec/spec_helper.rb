@@ -83,4 +83,6 @@ RSpec.configure do |config|
     # a real object. This is generally recommended.
     mocks.verify_partial_doubles = true
   end
+
+  config.alias_it_behaves_like_to :it_will, "it will"
 end
