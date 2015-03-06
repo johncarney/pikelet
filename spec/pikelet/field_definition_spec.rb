@@ -16,7 +16,7 @@ describe Pikelet::FieldDefinition do
 
     subject { definition }
 
-    its(:parser)    { is_expected.to eq :strip }
+    its(:parser)    { is_expected.to be_nil }
     its(:formatter) { is_expected.to eq :to_s }
     its(:padding)   { is_expected.to eq " " }
     its(:alignment) { is_expected.to eq :left }

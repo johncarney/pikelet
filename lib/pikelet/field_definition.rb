@@ -34,7 +34,8 @@ module Pikelet
 
     def parse(record)
       # TODO: Test that fields are always stripped.
-      if value = record[index].strip
+      if value = record[index]
+        value.strip!
         if parser
           parser.to_proc.call(value)
         else
