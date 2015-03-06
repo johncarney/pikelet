@@ -295,6 +295,26 @@ a custom class to use instead.
 
 The only requirement on the class is that its constructor (ie. `initialize`
 method) should accept attributes as a hash with symbol keys.
+
+### Legacy type signature syntax
+
+In Pikelet v1.x there wasn't a `signature_field` option. Instead, you were
+required to name your signature field `type_signature`.
+
+    Pikelet.define do
+      type_signature 0...4
+
+      record "NAME" do
+        first_name  4...14
+        last_name  14...24
+      end
+
+      record "ADDR" do
+        street_address  4...24
+        city           24...44
+      end
+    end
+
 ## Thoughts/plans
 
 * I had a crack at supporting lazy enumeration, and it kinda works. Sometimes.

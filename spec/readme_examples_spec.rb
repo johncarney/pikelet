@@ -174,4 +174,123 @@ describe "README Examples:" do
 
     it_will "format the records"
   end
+
+  describe "Formatting options" do
+    let(:definition) do
+      Pikelet.define do
+        number          0... 3, align: :right, pad: "0"
+        text            3...10, align: :left,  pad: "-"
+        another_number 10...13, type: :numeric
+        more_text      13...20, type: :alpha
+      end
+    end
+
+    let(:records) do
+      [
+        OpenStruct.new(number: 9, text: "blah", another_number: 12, more_text: "meh")
+      ]
+    end
+
+    let(:expected_data) do
+      <<-DATA
+        |009|blah---|012|meh    |
+      DATA
+    end
+
+    it_will "format the records"
+  end
+
+  describe "Custom record classes" do
+    class Base
+      attr_reader :type
+
+      def initialize(**attrs)
+        @type = attrs[:type]
+      end
+    end
+
+    class Name < Base
+      attr_reader :name
+
+      def initialize(**attrs)
+        super(type: "NAME")
+        @name = attrs[:name]
+      end
+    end
+
+    class Address < Base
+      attr_reader :street, :city
+
+      def initialize(**attrs)
+        super(type: "ADDR")
+        @street = attrs[:street]
+        @city = attrs[:city]
+      end
+    end
+
+    let(:definition) do
+      Pikelet.define signature_field: :type, record_class: Base do
+        type 0...4
+
+        record "NAME", record_class: Name do
+          name 4...20
+        end
+
+        record "ADDR", record_class: Address do
+          street  4...20
+          city   20...30
+        end
+      end
+    end
+
+    let(:data) do
+      <<-DATA
+        |NAME|Frida Kahlo     |
+        |ADDR|123 South Street|Sometown            |
+      DATA
+    end
+
+    let(:expected_records) do
+      [
+        { class: Name,    type: "NAME", name: "Frida Kahlo" },
+        { class: Address, type: "ADDR", street: "123 South Street", city: "Sometown" }
+      ]
+    end
+
+    it_will "parse the data"
+  end
+
+  describe "Legacy type signature syntax" do
+    let(:definition) do
+      Pikelet.define do
+        type_signature 0...4
+
+        record "NAME" do
+          first_name  4...14
+          last_name  14...24
+        end
+
+        record "ADDR" do
+          street_address  4...24
+          city           24...44
+        end
+      end
+    end
+
+    let(:data) do
+      <<-DATA
+        |NAME|Frida     |Kahlo     |
+        |ADDR|123 South Street     |Sometown            |
+      DATA
+    end
+
+    let(:expected_records) do
+      [
+        { type_signature: "NAME", first_name: "Frida", last_name: "Kahlo" },
+        { type_signature: "ADDR", street_address: "123 South Street", city: "Sometown" }
+      ]
+    end
+
+    it_will "parse the data"
+  end
 end
