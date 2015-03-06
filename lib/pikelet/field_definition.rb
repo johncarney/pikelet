@@ -11,7 +11,7 @@ module Pikelet
 
       @index = index
       @width = index.size
-      @parser = parse || block || :strip
+      @parser = parse || block
       @formatter = format || :to_s
 
       if type == :numeric
@@ -33,8 +33,13 @@ module Pikelet
     end
 
     def parse(record)
-      if value = record[index]
-        parser.to_proc.call(value)
+      # TODO: Test that fields are always stripped.
+      if value = record[index].strip
+        if parser
+          parser.to_proc.call(value)
+        else
+          value
+        end
       end
     end
 
