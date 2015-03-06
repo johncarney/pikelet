@@ -101,8 +101,8 @@ addresses:
 
 We can describe it as follows:
 
-    definition = Pikelet.define signature_field: :record_type do
-      record_type 0...4
+    definition = Pikelet.define signature_field: :type do
+      type 0...4
 
       record "NAME" do
         first_name  4...14
@@ -126,13 +126,13 @@ record's type signature as a parameter and a block describing its fields.
 When we parse the data, we end up with this:
 
     #<struct
-      record_type="NAME",
+      type="NAME",
       first_name="Frida",
       last_name="Kahlo">,
     #<struct
-      record_type="ADDR",
+      type="ADDR",
       street_address="123 South Street",
-      city="Sometoen",
+      city="Sometown",
       postal_code="45678Y",
       state="Someplace">
 
@@ -215,7 +215,7 @@ You can supply a custom formatter for a field.
 
     definition = Pikelet.define do
       username  0...10, format: :downcase
-      password 10...53, format: ->(v) { Digest::SHA1.hexdigest(v) }
+      password 10...50, format: ->(v) { Digest::SHA1.hexdigest(v) }
     end
 
     definition.format([
