@@ -31,8 +31,8 @@ module Pikelet
 
     def default_record_class
       Struct.new(*field_names) do
-        def initialize(**attributes)
-          super(*attributes.values_at(*self.class.members))
+        def initialize(*attributes)
+          super(*attributes[0].values_at(*self.class.members))
         end
       end
     end

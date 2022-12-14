@@ -204,7 +204,7 @@ describe "README Examples:" do
     class Base
       attr_reader :type
 
-      def initialize(**attrs)
+      def initialize(attrs)
         @type = attrs[:type]
       end
     end
@@ -212,8 +212,8 @@ describe "README Examples:" do
     class Name < Base
       attr_reader :name
 
-      def initialize(**attrs)
-        super(type: "NAME")
+      def initialize(attrs)
+        super( { type: "NAME" } )
         @name = attrs[:name]
       end
     end
@@ -221,8 +221,8 @@ describe "README Examples:" do
     class Address < Base
       attr_reader :street, :city
 
-      def initialize(**attrs)
-        super(type: "ADDR")
+      def initialize(attrs)
+        super( { type: "ADDR" } )
         @street = attrs[:street]
         @city = attrs[:city]
       end

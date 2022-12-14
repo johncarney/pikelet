@@ -14,7 +14,7 @@ describe Pikelet do
       Class.new do
         attr_reader :first_name, :last_name
 
-        def initialize(**attrs)
+        def initialize(attrs)
           @first_name = attrs[:first_name]
           @last_name = attrs[:last_name]
         end
